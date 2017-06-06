@@ -1,0 +1,40 @@
+---
+- hosts: 127.0.0.1
+  connection: local
+  user: root
+  sudo: false
+  gather_facts: false
+  serial: 1
+
+  vars_prompt:
+  - name: "pw"
+    prompt: "MOAR passwords"
+    private: yes
+
+  tasks:
+  - vsphere_guest:
+     vcenter_hostname: 10.10.10.19
+     username: administrator@vsphere.local
+     password: "{{pw}}"
+     guest: TestVM
+     state: powered_on
+     validate_certs: False
+
+     vm_disk:
+      disk1:
+        size_gb: 10
+        type: thin
+        datastore: datastore1
+     vm_nic:
+      nic1:
+        type: vmxnet3
+        network: VM Network
+        network_type: standard
+     vm_hardware:
+      memory_mb: 4068
+      num_cpus: 2
+      osid: centos64Guest
+      scsi: paravirtual
+     esxi:
+      datacenter: Datacenter
+      hostname: 10.10.10.20
